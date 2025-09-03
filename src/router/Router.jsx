@@ -1,15 +1,14 @@
 import React from "react";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Manu from "../header/mobileManu/Manu";
+import { Routes, Route } from "react-router-dom";
+import Contact from "../header/components/pages/Contact";
 
-const RouterContainer = () => {
+const Router = () => {
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/manu" element={<Manu />} />
-      </Routes>
-    </BrowserRouter>
+    <Routes>
+      <Route path="/contact" element={<Contact />} />
+      <Route path="/contact" element={<Contact />} />
+    </Routes>
   );
 };
 
-export default RouterContainer;
+export default Router;
