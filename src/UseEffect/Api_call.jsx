@@ -52,12 +52,16 @@ const Api_call = () => {
   );
 
   return (
-    <div className="w-screen h-screen flex  md:bg-[url('/images/bg-3.jpg!d')] bg-[url('/images/mb-bg.svg')] bg-cover bg-center text-white">
-      <div className="flex flex-wrap w-full  md:gap-0">
+    <div className="flex justify-center items-center w-full max-h-[1200px] ">
+
+
+
+<div className="max-w-[1400px] w-screen h-screen flex bg-[url('/images/mb-bg.svg')] sm:bg-[url('/images/tb-bg.svg')] lg:bg-[url('/images/bg-3.jpg!d')] bg-cover bg-center text-white">
+      <div className="flex flex-wrap w-full  md:gap-0   sm:flex sm:flex-wrap">
         {/* LEFT SIDE */}
-        <div className="md:w-1/2  flex flex-col md:justify-between gap-14 md:gap-0 md:p-10 w-full h-auto md:h-full">
+        <div className="lg:w-1/2  flex flex-col lg:justify-between gap-14 md:gap-0 md:p-10 w-full h-auto lg:h-full sm:w-full md:h-auto ">
           {/* Logo */}
-          <div className="flex justify-between">
+          <div className="flex justify-between ">
             <Link to="/" onClick={() => clearContent()}>
               <img
                 src="/images/weather-app-logo.svg"
@@ -68,8 +72,8 @@ const Api_call = () => {
             <div className=" ">
                <form 
             onSubmit={(e) => handleLocation(e)}
-            className="flex items-center  border-b border-white/50 pb-1 md:hidden mt-6 w-[200px] mr-2"
-          >
+            className="flex items-center  border-b border-white/50 pb-1 lg:hidden mt-6 w-[200px] mr-4 md:w-[300px]"
+            >
             <input
               type="text"
               placeholder="Search Location..."
@@ -86,7 +90,7 @@ const Api_call = () => {
           
 
           {/* ---------------------Time-----Loction---Temprature-- */}
-          <div className="mb-8  space-y-4  flex justify-center md:justify-start">
+          <div className="mb-8  space-y-4  flex justify-center lg:justify-start items-center md:gap-40  md:mt-20 lg:mt-0">
             {loading ? (
               <div className="space-y-4">
                 <div className="flex gap-4">
@@ -100,7 +104,6 @@ const Api_call = () => {
               <>
               <div className="  ">
                 <div className="flex gap-6">
-
 
                 <h1 className="text-[90px] font-bold leading-none">
                   {weather.current.temp_c}°
@@ -119,13 +122,15 @@ const Api_call = () => {
         </div>
 
         {/* RIGHT SIDE */}
-        <div className="md:w-[44%] w-full flex flex-col p-8 md:pt-14 pt-0 backdrop-blur-md bg-white/10">
+        <div className="md:flex md:justify-center lg:flex md:w-[100%] lg:w-[44%] w-full h-auto backdrop-blur-md bg-white/10">
+
+        <div className=" w-full flex flex-col p-8 lg:pt-14 md:pt-0 pt-0  sm:w-full md:flex md:justify-center lg:justify-center  lg:w-full md:w-[45%]  ">
           {/* Search */}
-          <div className="hidden md:flex">
+          <div className="hidden md:hidden lg:flex  ">
 
           <form
             onSubmit={(e) => handleLocation(e)}
-            className="hidden md:flex items-center w-full border-b border-white/50 md:pb-2 pb-0 "
+            className="hidden md:hidden lg:flex items-center w-full border-b border-white/50 md:pb-2 pb-0 "
             >
             <input
               type="text"
@@ -208,8 +213,8 @@ const Api_call = () => {
               <Shimmer className="h-[70px] w-full " />
             ) : (
               <div className="flex items-center justify-between bg-white/10 rounded-xl px-6 py-4">
-                <span className="flex items-center justify-around space-x-40">
-                  <span className="text-2xl flex gap-3">
+                <span className="flex items-center justify-around lg:space-x-40 md:space-x-10">
+                  <span className="text-2xl lg:flex lg:gap-3">
                     {weather.current.condition.text}
                   </span>
                   <span className="text-lg">{time()}</span>
@@ -220,15 +225,17 @@ const Api_call = () => {
             )}
           </div>
         </div>
+            </div>
       </div>
       <style>{`
         @keyframes shimmer {
           100% {
             transform: translateX(100%);
-          }
-        }
+            }
+            }
       `}</style>
     </div>
+            </div>
   );
 };
 
