@@ -68,7 +68,8 @@ const Contact = () => {
                   <input
                     type="text"
                     placeholder="+1 (555) 000-0000"
-                    className="w-full border rounded-md p-2"/>
+                    className="w-full border rounded-md p-2"
+                  />
 
                   <textarea
                     placeholder="Message"
