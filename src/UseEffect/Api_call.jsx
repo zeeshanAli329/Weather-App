@@ -8,6 +8,30 @@ const Api_call = () => {
   const [loading, setLoading] = useState(true);
   const [location, setLocation] = useState("");
 
+
+  // ----------bg-chages-weather-condition------
+
+  const Bg_changes = (condition) =>{
+    
+
+
+
+
+
+
+
+    const cond = condition.toLowerCase();
+
+  if (cond.includes("partly cloudy")) return "/images/partlycloud-bg.jpg";
+  if (cond.includes("sunny")) return "/images/sunny-bg.jpeg";
+  if (cond.includes("cloudy")) return "/images/cloudy-bg.webp";
+  if (cond.includes("rain")) return "/images/tb-bg.svg";
+  if (cond.includes("snow")) return "/images/snow-bg.svg";
+  if (cond.includes("thunder")) return "/images/storm-bg.jpeg";
+  if (cond.includes("overcast")) return "/images/overcast-bg.jpeg";
+    return "/images/defaul-bg.jpeg";
+
+  }
   const date = () => {
     return new Date().toLocaleDateString("en-GB", {
       weekday: "long",
@@ -56,10 +80,18 @@ const Api_call = () => {
 
 
 
-<div className="max-w-[1400px] w-screen h-screen flex bg-[url('/images/mb-bg.svg')] sm:bg-[url('/images/tb-bg.svg')] lg:bg-[url('/images/bg-3.jpg!d')] bg-cover bg-center text-white">
+<div
+  className="max-w-[1400px] w-screen h-screen flex bg-cover bg-center text-white transition-all duration-500 ease-in-out"
+  style={{
+    backgroundImage: weather
+      ? `url(${Bg_changes(weather.current.condition.text)})`
+      : `url('/images/defaul-bg.jpeg')`
+  }}
+>
+
       <div className="flex flex-wrap w-full  md:gap-0   sm:flex sm:flex-wrap">
         {/* LEFT SIDE */}
-        <div className="lg:w-1/2  flex flex-col lg:justify-between gap-14 md:gap-0 md:p-10 w-full h-auto lg:h-full sm:w-full md:h-full ">
+        <div className="lg:w-1/2  flex flex-col lg:justify-between gap-14 md:gap-0 md:p-10 w-full  lg:h-full sm:w-full md:h-auto ">
           {/* Logo */}
           <div className="flex justify-between ">
             <Link to="/" onClick={() => clearContent()}>
@@ -228,6 +260,9 @@ const Api_call = () => {
             </div>
       </div>
       <style>{`
+      .transition-bg {
+        transition: background-image 0.5s ease-in-out;
+        }
         @keyframes shimmer {
           100% {
             transform: translateX(100%);
