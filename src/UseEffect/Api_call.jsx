@@ -59,7 +59,7 @@ const Api_call = () => {
 <div className="max-w-[1400px] w-screen h-screen flex bg-[url('/images/mb-bg.svg')] sm:bg-[url('/images/tb-bg.svg')] lg:bg-[url('/images/bg-3.jpg!d')] bg-cover bg-center text-white">
       <div className="flex flex-wrap w-full  md:gap-0   sm:flex sm:flex-wrap">
         {/* LEFT SIDE */}
-        <div className="lg:w-1/2  flex flex-col lg:justify-between gap-14 md:gap-0 md:p-10 w-full h-auto lg:h-full sm:w-full md:h-auto ">
+        <div className="lg:w-1/2  flex flex-col lg:justify-between gap-14 md:gap-0 md:p-10 w-full h-auto lg:h-full sm:w-full md:h-full ">
           {/* Logo */}
           <div className="flex justify-between ">
             <Link to="/" onClick={() => clearContent()}>
