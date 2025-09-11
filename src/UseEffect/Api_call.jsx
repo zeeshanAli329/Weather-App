@@ -29,7 +29,7 @@ const Api_call = () => {
   if (cond.includes("snow")) return "/images/snow-bg.svg";
   if (cond.includes("thunder")) return "/images/storm-bg.jpeg";
   if (cond.includes("overcast")) return "/images/overcast-bg.jpeg";
-    return "/images/defaul-bg.jpeg";
+    return "/images/bg-3.jpg!d";
 
   }
   const date = () => {
@@ -85,7 +85,7 @@ const Api_call = () => {
   style={{
     backgroundImage: weather
       ? `url(${Bg_changes(weather.current.condition.text)})`
-      : `url('/images/defaul-bg.jpeg')`
+      : `url('/images/bg-3.jpg!d')`
   }}
 >
 
