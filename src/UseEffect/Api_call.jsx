@@ -28,7 +28,7 @@ const Api_call = () => {
     e.preventDefault();
     try {
       const res = await fetch(
-        `http://api.weatherapi.com/v1/current.json?key=6972fd71157e40268f063922250809&q=${location}&aqi=no`
+        `https://api.weatherapi.com/v1/current.json?key=6972fd71157e40268f063922250809&q=${location}&aqi=no`
       );
       const data = await res.json();
       setWeather(data);
