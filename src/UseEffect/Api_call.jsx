@@ -30,6 +30,7 @@ const Api_call = () => {
   if (cond.includes("snow")) return "/images/snow-bg.svg";
   if (cond.includes("thunder")) return "/images/storm-bg.jpeg";
   if (cond.includes("overcast")) return "/images/overcast-bg.jpeg";
+  if (cond.includes("clear")) return "/images/clear-bg.jpg";
     return "/images/bg-3.jpg!d";
 
   }
