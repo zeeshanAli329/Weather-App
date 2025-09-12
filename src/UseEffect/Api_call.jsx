@@ -13,17 +13,10 @@ const Api_call = () => {
   // ----------bg-chages-weather-condition------
 
   const Bg_changes = (condition) =>{
-    
 
+  const cond = condition.toLowerCase();
 
-
-
-
-
-
-    const cond = condition.toLowerCase();
-
-  if (cond.includes("partly cloudy")) return "/images/partlycloud-bg.jpg";
+  if (cond.includes("partlycloudy")) return "/images/partlycloud-bg.jpg";
   if (cond.includes("sunny")) return "/images/sunny-bg.jpeg";
   if (cond.includes("cloudy")) return "/images/cloudy-bg.webp";
   if (cond.includes("rain")) return "/images/tb-bg.svg";
@@ -31,6 +24,7 @@ const Api_call = () => {
   if (cond.includes("thunder")) return "/images/storm-bg.jpeg";
   if (cond.includes("overcast")) return "/images/overcast-bg.jpeg";
   if (cond.includes("clear")) return "/images/clear-bg.jpg";
+  if (cond.includes("Light rain shower")) "/images/light-rain-bg.jpg";
     return "/images/bg-3.jpg!d";
 
   }
