@@ -165,7 +165,7 @@ const Api_call = () => {
             <div className=" ">
                <form 
             onSubmit={(e) => handleLocation(e)}
-            className="flex items-center  border-b border-white/50 pb-1 lg:hidden mt-6 w-[200px] mr-4 md:w-[300px]"
+            className="flex items-center  border-b border-white/50 pb-1 lg:hidden mt-12 md:mt-6 w-[200px] mr-4 md:w-[300px]"
             >
             <input
               type="text"
