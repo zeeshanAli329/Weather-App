@@ -1,5 +1,5 @@
 import { IoSearch } from "react-icons/io5";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Cloud, Sun } from "lucide-react";
 
@@ -9,6 +9,31 @@ const Api_call = () => {
   const [location, setLocation] = useState("");
   const [error, setError] = useState("");
 
+ const fetchWeather = async (query) => {
+  try {
+    const res = await fetch(
+            `https://api.weatherapi.com/v1/current.json?key=6972fd71157e40268f063922250809&q=${query}&aqi=no`
+    );
+
+    const data = await res.json();
+    if(data.error){
+      setError(data.error.message);
+      setLoading(true);
+    }
+    else{
+      setWeather(data);
+      setLoading(false);
+      setError("");
+    }
+    
+  } catch (error) {
+    console.log(error);
+    setError("Failed to fetch weather..!");
+  }
+ };
+   useEffect(() =>{
+    fetchWeather("auto:ip");
+   },[])
 
   // ----------bg-chages-weather-condition------
 
@@ -16,7 +41,7 @@ const Api_call = () => {
 
   const cond = condition.toLowerCase();
 
-  if (cond.includes("partlycloudy")) return "/images/partlycloud-bg.jpg";
+  if (cond.includes("partly cloudy")) return "/images/cloud.jpg";
   if (cond.includes("sunny")) return "/images/sunny-bg.jpeg";
   if (cond.includes("cloudy")) return "/images/cloudy-bg.webp";
   if (cond.includes("rain")) return "/images/tb-bg.svg";
@@ -25,7 +50,7 @@ const Api_call = () => {
   if (cond.includes("overcast")) return "/images/overcast-bg.jpeg";
   if (cond.includes("clear")) return "/images/clear-bg.jpg";
   if (cond.includes("Light rain shower")) "/images/light-rain-bg.jpg";
-    return "/images/bg-3.jpg!d";
+    return "images/defaul-bg.jpeg";
 
   }
   const date = () => {
@@ -51,6 +76,7 @@ const Api_call = () => {
         `https://api.weatherapi.com/v1/current.json?key=6972fd71157e40268f063922250809&q=${location}&aqi=no`
       );
       const data = await res.json();
+      console.log(data);
       setWeather(data);
       setLoading(false);
     } catch (error) {
@@ -81,7 +107,7 @@ const Api_call = () => {
   style={{
     backgroundImage: weather
       ? `url(${Bg_changes(weather.current.condition.text)})`
-      : `url('/images/bg-3.jpg!d')`
+      : `url('images/defaul-bg.jpeg')`
   }}
 >
 
