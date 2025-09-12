@@ -98,7 +98,7 @@ const Api_call = () => {
             <Link to="/" onClick={() => clearContent()}>
         
              <svg
-  className="md:h-20 md:w-[150px] h-[100px] w-[150px] md:ml-0 mt-0 md:mt-0 lg:h-[120px] lg:w-[150px] "
+  className="md:h-20 md:w-[150px] h-[100px] w-[100px]  md:ml-0 mt-3 md:mt-0 lg:h-[120px] lg:w-[150px] "
   version="1.0"
   xmlns="http://www.w3.org/2000/svg"
   width="260pt"
