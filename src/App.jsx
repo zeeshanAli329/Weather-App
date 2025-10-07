@@ -1,24 +1,17 @@
 import React from 'react';
-// import HeaderContainer from './header/HeaderContainer';
-// import Router from './router/Router';
 import "./index.css";
-import Counter from './UseEffect/Counter';
+import { Provider } from 'react-redux';
+import store from './redux/Store';
 import Api_call from './UseEffect/Api_call';
-import Interval_Example from './UseEffect/Interval_Example';
-import Nasa_Api_example from './UseEffect/Nasa_api_example';
 
 function App() {
   return (
-    <>
-    {/* <Nasa_Api_example /> */}
-      {/* <Interval_Example /> */}
-      <Api_call />
-      {/* <Counter /> */}
-      {/* <HeaderContainer /> */}
-      {/* <Router /> */}
-    </>
+    <Provider store={store}>
+      <div className="App">
+        <Api_call />
+      </div>
+    </Provider>
   );
 }
 
 export default App;
-// Lahre

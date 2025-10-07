@@ -2,40 +2,34 @@ import { IoSearch } from "react-icons/io5";
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Cloud, Sun } from "lucide-react";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchWeather, setLocation, clearWeather } from "../redux/WeatherSlice";
 
 const Api_call = () => {
-  const [weather, setWeather] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [location, setLocation] = useState("");
-  const [error, setError] = useState("");
+  const dispatch = useDispatch();
+  const { data: weather, loading, error } = useSelector((state) => state.weather);
+  const [localLocation, setLocalLocation] = useState("");
 
-  const fetchWeather = async (query) => {
-    try {
-      const res = await fetch(
-        `https://api.weatherapi.com/v1/current.json?key=6972fd71157e40268f063922250809&q=${query}&aqi=no`
-      );
+  // Fetch weather on component mount
+  useEffect(() => {
+    dispatch(fetchWeather("auto:ip"));
+  }, [dispatch]);
 
-      const data = await res.json();
-      if (data.error) {
-        setError(data.error.message);
-        setWeather(null);
-        setLoading(true);
-      } else {
-        setWeather(data);
-        setError("");
-        setLoading(false);
-      }
-    } catch (error) {
-      console.log(error);
-      setError("Failed to fetch weather..!");
+  // Handle location search
+  const handleLocation = (e) => {
+    e.preventDefault();
+    if (localLocation.trim()) {
+      dispatch(fetchWeather(localLocation));
     }
   };
-  useEffect(() => {
-    fetchWeather("auto:ip");
-  }, []);
 
-  // ----------bg-chages-weather-condition------
+  // Clear content
+  const clearContent = () => {
+    dispatch(clearWeather());
+    setLocalLocation("");
+  };
 
+  // ----------bg-changes-weather-condition------
   const Bg_changes = (condition) => {
     const cond = condition.toLowerCase();
 
@@ -47,10 +41,11 @@ const Api_call = () => {
     if (cond.includes("thunder")) return "/images/storm-bg.jpeg";
     if (cond.includes("overcast")) return "/images/overcast-bg.jpeg";
     if (cond.includes("clear")) return "/images/clear-bg.jpg";
-    if (cond.includes("Light rain shower")) "/images/light-rain-bg.jpg";
-    if (cond.includes("error")) "/images/err-bg.jpg";
-    return "images/defaul-bg.jpeg";
+    if (cond.includes("light rain shower")) return "/images/light-rain-bg.jpg";
+    if (cond.includes("error")) return "/images/err-bg.jpg";
+    return "/images/defaul-bg.jpeg";
   };
+
   const date = () => {
     return new Date().toLocaleDateString("en-GB", {
       weekday: "long",
@@ -67,35 +62,6 @@ const Api_call = () => {
     });
   };
 
-  async function handleLocation(e) {
-    e.preventDefault();
-    try {
-      const res = await fetch(
-        `https://api.weatherapi.com/v1/current.json?key=6972fd71157e40268f063922250809&q=${location}&aqi=no`
-      );
-      const data = await res.json();
-      if (data.error) {
-        setError(data.error.message);
-        setWeather(null);
-        setLoading(true);
-      } else {
-        setWeather(data);
-        setError("");
-        setLoading(false);
-      }
-    } catch (err) {
-      console.log(err);
-      setError("Something went wrong!");
-      setWeather(null);
-      setLoading(true);
-    }
-  }
-
-  function clearContent() {
-    setLoading(true);
-    setLocation("");
-  }
-
   const Shimmer = ({ className }) => (
     <div
       className={`relative overflow-hidden rounded-md bg-white/20 ${className}`}
@@ -105,23 +71,21 @@ const Api_call = () => {
   );
 
   return (
-    <div className="flex justify-center items-center w-full max-h-[1200px] ">
+    <div className="w-full min-h-screen">
       <div
-        className="max-w-[1400px] w-screen h-screen flex bg-cover bg-center text-white transition-all duration-500 ease-in-out"
+        className="w-full min-h-screen flex bg-cover bg-center text-white transition-all duration-500 ease-in-out"
         style={{
           backgroundImage: weather
             ? `url(${Bg_changes(weather.current.condition.text)})`
-            : `url('images/defaul-bg.jpeg')`,
+            : `url('/images/defaul-bg.jpeg')`,
         }}
       >
-        <div className="flex flex-wrap w-full  md:gap-0   sm:flex sm:flex-wrap">
-          {/* LEFT SIDE */}
-          <div className="lg:w-1/2  flex flex-col lg:justify-between gap-14 md:gap-0 md:p-10 w-full  lg:h-full sm:w-full md:h-auto ">
-            {/* Logo */}
-            <div className="flex justify-between ">
-              <Link to="/" onClick={() => clearContent()}>
+        <div className="flex flex-col lg:flex-row w-full min-h-screen">
+          <div className="lg:w-1/2 flex flex-col justify-between p-6 md:p-10 w-full min-h-screen">
+            <div className="flex justify-between items-start">
+              <Link to="/" onClick={clearContent}>
                 <svg
-                  className="md:h-20 md:w-[150px] h-[100px] w-[100px]  md:ml-0 mt-3 md:mt-0 lg:h-[120px] lg:w-[150px] "
+                  className="h-16 w-16 md:h-20 md:w-20 lg:h-24 lg:w-24"
                   version="1.0"
                   xmlns="http://www.w3.org/2000/svg"
                   width="260pt"
@@ -179,172 +143,173 @@ const Api_call = () => {
                   </g>
                 </svg>
               </Link>
-              <div className=" ">
+              <div className="lg:hidden">
                 <form
-                  onSubmit={(e) => handleLocation(e)}
-                  className="flex items-center  border-b border-white/50 pb-1 lg:hidden mt-12 md:mt-6 w-[200px] mr-4 md:w-[300px]"
+                  onSubmit={handleLocation}
+                  className="flex items-center border-b border-white/50 pb-1 w-[180px] md:w-[250px]"
                 >
                   <input
                     type="text"
                     placeholder="Search Location..."
-                    value={location}
-                    onChange={(e) => setLocation(e.target.value)}
-                    className="bg-transparent text-white placeholder:text-white w-full focus:outline-none"
+                    value={localLocation}
+                    onChange={(e) => setLocalLocation(e.target.value)}
+                    className="bg-transparent text-white placeholder:text-white/80 w-full focus:outline-none text-sm md:text-base"
                   />
-                  <button type="submit" className="ml-3">
+                  <button type="submit" className="ml-2">
                     <IoSearch className="h-4 w-4" />
                   </button>
                 </form>
               </div>
             </div>
 
-            {/* ---------------------Time-----Loction---Temprature-- */}
-            <div className="mb-8  space-y-4  flex justify-center lg:justify-start items-center md:gap-40  md:mt-20 lg:mt-0">
+            {/* Weather Info */}
+            <div className="flex-1 flex flex-col justify-center items-center lg:items-start">
               {loading ? (
-                <div className="space-y-4">
-                  <div className="flex gap-4">
-                    <Shimmer className="h-[100px] w-[200px]" />
-                    <Shimmer className="h-8 w-[150px]" />
+                <div className="space-y-4 w-full max-w-md">
+                  <div className="flex gap-4 items-end">
+                    <Shimmer className="h-24 w-32" />
+                    <Shimmer className="h-8 w-32" />
                   </div>
-                  <Shimmer className="h-5 w-[220px]" />
+                  <Shimmer className="h-5 w-48" />
                 </div>
-              ) : (
-                <>
-                  <div className="  ">
-                    <div className="flex gap-6">
-                      <h1 className="text-[90px] font-bold leading-none">
-                        {weather.current.temp_c}°
-                      </h1>
-                      <p className="text-3xl mt-6">{weather.location.name}</p>
-                    </div>
-
-                    {/* -----------Time-------- */}
-                    <p className="text-base opacity-80">
-                      {time()} - {date()}
+              ) : weather ? (
+                <div className="text-center lg:text-left w-full max-w-md">
+                  <div className="flex flex-col lg:flex-row items-center lg:items-end gap-4 lg:gap-6 mb-4">
+                    <h1 className="text-7xl md:text-8xl lg:text-9xl font-bold leading-none">
+                      {weather.current.temp_c}°
+                    </h1>
+                    <p className="text-2xl md:text-3xl lg:text-4xl font-medium">
+                      {weather.location.name}
                     </p>
                   </div>
-                </>
+                  <p className="text-base md:text-lg opacity-90">
+                    {time()} - {date()}
+                  </p>
+                </div>
+              ) : (
+                <div className="text-white text-center lg:text-left">
+                  <p className="text-2xl">No weather data available</p>
+                  <p className="text-lg opacity-80 mt-2">Search for a location to get started</p>
+                </div>
               )}
             </div>
           </div>
 
           {/* RIGHT SIDE */}
-          <div className="md:flex md:justify-center lg:flex md:w-[100%] lg:w-[44%] w-full h-auto backdrop-blur-md bg-white/10">
-            <div className=" w-full flex flex-col p-8 lg:pt-14 md:pt-0 pt-0  sm:w-full md:flex md:justify-center lg:justify-center  lg:w-full md:w-[45%]  ">
-              {/* Search */}
-              <div className="hidden md:hidden lg:flex  ">
+          <div className="lg:w-1/2 w-full min-h-screen backdrop-blur-md bg-black/20 lg:bg-white/10">
+            <div className="w-full h-full flex flex-col p-6 md:p-8 lg:p-12">
+              {/* Desktop Search */}
+              <div className="hidden lg:block">
                 <form
-                  onSubmit={(e) => handleLocation(e)}
-                  className="hidden md:hidden lg:flex items-center w-full border-b border-white/50 md:pb-2 pb-0 "
+                  onSubmit={handleLocation}
+                  className="flex items-center w-full border-b border-white/50 pb-3"
                 >
                   <input
                     type="text"
                     placeholder="Search Location..."
-                    value={location}
-                    onChange={(e) => setLocation(e.target.value)}
-                    className="bg-transparent text-white placeholder:text-white w-full focus:outline-none"
+                    value={localLocation}
+                    onChange={(e) => setLocalLocation(e.target.value)}
+                    className="bg-transparent text-white placeholder:text-white/80 w-full focus:outline-none text-lg"
                   />
-                  <button type="submit" className="ml-3">
+                  <button type="submit" className="ml-4">
                     <IoSearch className="h-6 w-6" />
                   </button>
                 </form>
               </div>
 
-              <div className="mt-10 space-y-4">
-                <h2 className="text-xl font-semibold">Weather Details...</h2>
+              {/* Weather Details */}
+              <div className="flex-1 flex flex-col justify-center lg:justify-start mt-8 lg:mt-12">
+                <h2 className="text-xl md:text-2xl font-semibold mb-6 lg:mb-8">Weather Details...</h2>
+                
                 {error ? (
-                  <div className="text-red-500 text-lg font-semibold">
+                  <div className="text-red-300 text-lg font-semibold bg-red-500/20 p-4 rounded-lg">
                     {error}
                   </div>
                 ) : loading ? (
-                  <div className="space-y-5">
-                    <Shimmer className="h-6 w-[250px]" />
-                    <Shimmer className="h-6 w-[200px]" />
-                    <Shimmer className="h-6 w-[180px]" />
-                    <Shimmer className="h-6 w-[220px]" />
-                    <Shimmer className="h-6 w-[220px]" />
-                    <Shimmer className="h-6 w-[220px]" />
+                  <div className="space-y-4 w-full max-w-md">
+                    <Shimmer className="h-6 w-full" />
+                    <Shimmer className="h-6 w-5/6" />
+                    <Shimmer className="h-6 w-4/5" />
+                    <Shimmer className="h-6 w-full" />
+                    <Shimmer className="h-6 w-5/6" />
+                  </div>
+                ) : weather ? (
+                  <div className="w-full max-w-md">
+                    <div className="uppercase font-medium tracking-wide text-lg md:text-xl mb-6 flex items-center gap-3">
+                      {weather.current.condition.text}
+                      <Sun className="text-yellow-300" />
+                    </div>
+                    
+                    <div className="space-y-4 text-base md:text-lg">
+                      <div className="flex justify-between items-center py-2 border-b border-white/20">
+                        <span>Temp max:</span>
+                        <span className="flex items-center gap-3">
+                          {weather.current.temp_c + 3}°C
+                          <img src="./images/tmp-max.svg" alt="Max temp" className="w-6 h-6" />
+                        </span>
+                      </div>
+                      
+                      <div className="flex justify-between items-center py-2 border-b border-white/20">
+                        <span>Temp min:</span>
+                        <span className="flex items-center gap-3">
+                          {weather.current.temp_c - 1}°C
+                          <img src="./images/temp-min.svg" alt="Min temp" className="w-6 h-6" />
+                        </span>
+                      </div>
+                      
+                      <div className="flex justify-between items-center py-2 border-b border-white/20">
+                        <span>Humidity:</span>
+                        <span className="flex items-center gap-3">
+                          {weather.current.humidity}%
+                          <img src="./images/humi.svg" alt="Humidity" className="w-6 h-6" />
+                        </span>
+                      </div>
+                      
+                      <div className="flex justify-between items-center py-2 border-b border-white/20">
+                        <span>Cloudy:</span>
+                        <span className="flex items-center gap-3">
+                          {weather.current.cloud}%
+                          <img src="./images/cloud.svg" alt="Cloud" className="w-6 h-6" />
+                        </span>
+                      </div>
+                      
+                      <div className="flex justify-between items-center py-2 border-b border-white/20">
+                        <span>Wind:</span>
+                        <span className="flex items-center gap-3">
+                          {weather.current.wind_kph} km/h
+                          <img src="./images/wind.svg" alt="Wind" className="w-6 h-6" />
+                        </span>
+                      </div>
+                    </div>
                   </div>
                 ) : (
-                  <ul className="space-y-4 text-lg">
-                    <li className="uppercase font-medium tracking-wide flex gap-6">
-                      {weather.current.condition.text}
-                      <Sun className="text-[#ffb72797]" />
-                    </li>
-                    <li className="flex justify-between">
-                      <p>Temp max:</p>{" "}
-                      <span className="flex gap-8">
-                        {weather.current.temp_c + 3}°C
-                        <img src="./images/tmp-max.svg"></img>
-                      </span>
-                    </li>
-                    <li className="flex justify-between">
-                      <p>Temp min:</p>
-                      <span className="flex gap-8">
-                        {weather.current.temp_c - 1}°C
-                        <img src="./images/temp-min.svg"></img>
-                      </span>
-                    </li>
-                    <li className="flex justify-between">
-                      <p>Humidity:</p>
-                      <span className="flex gap-8">
-                        {weather.current.humidity}%
-                        <img src="./images/humi.svg"></img>
-                      </span>
-                    </li>
-                    <li className="flex justify-between">
-                      <p>Cloudy: </p>
-                      <span className="flex gap-8">
-                        {weather.current.cloud}%
-                        <img src="./images/cloud.svg"></img>
-                      </span>
-                    </li>
-                    <li className="flex justify-between">
-                      <p>Wind: </p>
-                      <span className="flex gap-8">
-                        {weather.current.wind_kph} km/h
-                        <img src="./images/wind.svg"></img>
-                      </span>
-                    </li>
-                    <li className="flex">
-                      <p>Error : {error.message}</p>
-                    </li>
-                  </ul>
+                  <div className="text-white/80">No weather data to display</div>
                 )}
               </div>
 
-              <div className="mt-auto hidden md:flex md:flex-col ">
-                <h2 className="text-xl font-semibold mb-3">
-                  Today&apos;s Weather Forecast...
-                </h2>
+              {/* Today's Forecast */}
+              <div className="mt-8 lg:mt-auto">
+                <h2 className="text-xl font-semibold mb-4">Today&apos;s Weather Forecast...</h2>
                 {loading ? (
-                  <Shimmer className="h-[70px] w-full " />
+                  <Shimmer className="h-20 w-full rounded-xl" />
+                ) : weather ? (
+                  <div className="flex items-center justify-between bg-white/10 rounded-xl px-6 py-4 backdrop-blur-sm">
+                    <div className="flex items-center gap-4">
+                      <span className="text-lg">{weather.current.condition.text}</span>
+                      <span className="text-white/70">|</span>
+                      <span className="text-white/70">{time()}</span>
+                    </div>
+                    <span className="text-2xl font-semibold">{weather.current.temp_c}°</span>
+                  </div>
                 ) : (
-                  <div className="flex items-center justify-between bg-white/10 rounded-xl px-6 py-4">
-                    <span className="flex items-center justify-around lg:space-x-40 md:space-x-10">
-                      <span className="text-2xl lg:flex lg:gap-3">
-                        {weather.current.condition.text}
-                      </span>
-                      <span className="text-lg">{time()}</span>
-                    </span>
-                    <span className="text-lg">{}</span>
-                    <span className="text-lg">{weather.current.temp_c}°</span>
+                  <div className="text-white/70 bg-white/10 rounded-xl px-6 py-4 text-center">
+                    No forecast data available
                   </div>
                 )}
               </div>
             </div>
           </div>
         </div>
-        <style>{`
-      .transition-bg {
-        transition: background-image 0.5s ease-in-out;
-        }
-        @keyframes shimmer {
-          100% {
-            transform: translateX(100%);
-            }
-            }
-      `}</style>
       </div>
     </div>
   );
